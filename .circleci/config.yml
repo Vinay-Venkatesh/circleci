@@ -15,6 +15,9 @@ executors:
 
 jobs:
   build:
+    executor: hadolint_executor
+        steps:
+         - run_dockerfile_lint
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
@@ -54,7 +57,3 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
-      
-      executor: hadolint_executor
-        steps:
-         - run_dockerfile_lint
