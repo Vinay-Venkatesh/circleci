@@ -1,7 +1,7 @@
 update:
-	apt update -y
+	sudo apt update -y
 install:
-	apt install python-pip -y
+	sudo apt install python-pip -y
 	pip install -r requirements.txt
 
 test:
