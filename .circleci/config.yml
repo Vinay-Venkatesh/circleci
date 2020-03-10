@@ -6,53 +6,35 @@ version: 2.1
 executors:
   hadolint_executor:
     parameters:
-        tag:
+        tag:python_executor
           type: string
           default: "v1.6.6-6-g254b4ff"
     docker:
        - image: hadolint/hadolint:<<parameters.tag>>
+  
+  python_executor:
+    parameters:
+       tag:
+         type: string
+         default: "3.6.1"
+    docker:
+      - image: circleci/python:<<parameters.tag>>
+
 jobs:
   dockerfile_lint:
     executor: hadolint_executor
     steps:
       - run_dockerfile_lint
   build:
-    docker:
-      # specify the version you desire here
-      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3.6.1
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "requirements.txt" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-          
-      #Install dependencies!
-      install_dependencies:
-        steps:
-          - run_install_dependencies
-          
-      - save_cache:
-          paths:
-            - ./venv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
-        
-      # run lints!
-      python_lint:
-        steps:
-          - run_lint
+    python_lint:
+      executor: python_executor
+      steps:
+        - run_pythonlint
+    
+    dockerfile_lint:
+      executor: hadolint_executor
+      steps:
+       - run_dockerfile_lint
           
 commands:
   run_dockerfile_lint:
@@ -63,17 +45,33 @@ commands:
          command: |
            hadolint Dockerfile
            
-  run_install_dependencies:
-    - run:
-        name: install dependencies
+  run_pythonlint:
+     working_directory: ~/repo
+     steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "requirements.txt" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: install dependencies
           command: |
             python3 -m venv venv
             . venv/bin/activate
             make install
-      
-  run_lint:
-    - run:
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "requirements.txt" }}
+        
+      # run lints!
+      - run:
           name: run lint
           command: |
             . venv/bin/activate
             make lint
+    
