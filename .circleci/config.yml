@@ -22,11 +22,11 @@ executors:
     working_directory: ~/repo
 
 jobs:
-  build:
+  python_executor:
       executor: python_executor
       steps:
         - run_pythonlint
-   
+  docker_lint: 
       executor: hadolint_executor
       steps:
        - run_dockerfile_lint
