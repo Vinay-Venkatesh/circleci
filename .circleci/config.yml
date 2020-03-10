@@ -3,7 +3,19 @@
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
 version: 2
+executors:
+  hadolint_executor:
+    parameters:
+      tag:
+        type: string
+        default: "latest"
+    docker:
+      - image: hadolint/hadolint:v1.17.5-6-gbc8bab9-alpine
 jobs:
+  dockerfile_lint:
+    executor: hadolint_executor
+    steps:
+      - run_dockerfile_lint
   build:
     docker:
       # specify the version you desire here
@@ -44,3 +56,11 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
+commands:
+  run_dockerfile_lint:
+    steps:
+      - checkout
+      - run:
+         name: Dockerfile Lint
+         command: |
+           hadolint Dockerfile
