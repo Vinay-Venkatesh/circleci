@@ -72,7 +72,8 @@ commands:
     
 workflows:
   version: 2
-   jobs:
-    - python_executor
-    - docker_lint
+  python_docker: 
+    jobs:
+     - python_executor
+     - docker_lint
 
