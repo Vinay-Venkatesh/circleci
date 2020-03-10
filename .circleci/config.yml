@@ -58,3 +58,10 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
+commands:
+  run_dockerfile_lint:
+    steps:
+      - run:
+         name: Dockerfile Lint
+         command: |
+           hadolint Dockerfile     
