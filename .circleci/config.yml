@@ -61,6 +61,7 @@ jobs:
 commands:
   run_dockerfile_lint:
     steps:
+      - checkout
       - run:
          name: Dockerfile Lint
          command: |
