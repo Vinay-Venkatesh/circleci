@@ -19,19 +19,14 @@ executors:
          default: "3.6.1"
     docker:
       - image: circleci/python:<<parameters.tag>>
+    working_directory: ~/repo
 
 jobs:
-  dockerfile_lint:
-    executor: hadolint_executor
-    steps:
-      - run_dockerfile_lint
   build:
-    python_lint:
       executor: python_executor
       steps:
         - run_pythonlint
-    
-    dockerfile_lint:
+   
       executor: hadolint_executor
       steps:
        - run_dockerfile_lint
@@ -46,7 +41,6 @@ commands:
            hadolint Dockerfile
            
   run_pythonlint:
-     working_directory: ~/repo
      steps:
       - checkout
 
