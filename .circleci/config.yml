@@ -44,9 +44,3 @@ jobs:
           command: |
             . venv/bin/activate
             make lint
-      - run:
-             name: Dockerlint
-             command: docker run --rm -i -v ${PWD}/.hadolint.yml:/.hadolint.yaml hadolint/hadolint:v1.10.3 < Dockerfile
-      - run:
-             name: Build image
-             command: docker build -t api .
