@@ -38,24 +38,22 @@ jobs:
           - v1-dependencies-{{ checksum "requirements.txt" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-
-      - run:
-          name: install dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            make install
+          
+      #Install dependencies!
+      install_dependencies:
+        steps:
+          - run_install_dependencies
+          
       - save_cache:
           paths:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
         
       # run lints!
-      - run:
-          name: run lint
-          command: |
-            . venv/bin/activate
-            make lint
+      python_lint:
+        steps:
+          - run_lint
+          
 commands:
   run_dockerfile_lint:
     steps:
@@ -64,3 +62,18 @@ commands:
          name: Dockerfile Lint
          command: |
            hadolint Dockerfile
+           
+  run_install_dependencies:
+    - run:
+        name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            make install
+      
+  run_lint:
+    - run:
+          name: run lint
+          command: |
+            . venv/bin/activate
+            make lint
