@@ -3,6 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
 version: 2.1
+
 executors:
   hadolint_executor:
     parameters:
@@ -69,3 +70,9 @@ commands:
             . venv/bin/activate
             make lint
     
+workflows:
+  version: 2
+   jobs:
+    - python_executor
+    - docker_lint
+
